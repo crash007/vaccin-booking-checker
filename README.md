@@ -2,6 +2,7 @@
 
 Kolla lediga covidvaccinationstider på några platser i Västernorrland
 
+Installera genom att köra $ npm install <br>
 Kör med:
 $ node vac
 
