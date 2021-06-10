@@ -6,10 +6,11 @@ const $ = require( "jquery" )( window );
 function parse(data,clinique) {
     $(data).each(function (i, d) {
         $(d.slots).each(function (i, da) {
+            
             if (da.available == true) {
-                console.log("Found a time at: "+ clinique.name+" "+new Date().toLocaleTimeString());
-                console.log(da.when);
-                console.log(d.date)
+                console.log(new Date().toLocaleTimeString()+": Found a time at: "+ clinique.name);
+                //console.log(da.when);
+                console.log(d.date+' '+da.when)
                 console.log("Boka här: "+ 'https://bokning.mittvaccin.se/klinik/'+clinique.cliniqueId+'/bokning');
             }
         });
