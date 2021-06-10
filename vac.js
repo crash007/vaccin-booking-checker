@@ -8,7 +8,7 @@ function parse(data,clinique) {
         $(d.slots).each(function (i, da) {
 
             if (da.available == true) {
-                console.log("Found a time at: "+ clinique+" ");
+                console.log("Found a time at: "+ clinique+" "+new Date().toLocaleTimeString());
                 console.log(da.when);
                 console.log(d.date)
             }
