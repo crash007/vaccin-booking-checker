@@ -8,7 +8,7 @@ function parse(data,clinique) {
         $(d.slots).each(function (i, da) {
 
             if (da.available == true) {
-                console.log("Found a time at: "+ clinique);
+                console.log("Found a time at: "+ clinique+" ");
                 console.log(da.when);
                 console.log(d.date)
             }
@@ -26,7 +26,7 @@ function execute() {
     cliniques.forEach(function (values, cliniquename) {
 
         values.forEach(function (url, i) {
-            console.log(url);
+            //console.log(url);
             $.get(url,
                 function (data, textStatus, jqXHR) {  // success callback
                     parse(data, cliniquename);
@@ -43,4 +43,4 @@ setInterval(function() {
 //RUN first
 execute();
 
-
+console.log("Started");
