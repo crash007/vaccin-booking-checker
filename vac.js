@@ -6,12 +6,14 @@ const $ = require( "jquery" )( window );
 function parse(data,clinique) {
     $(data).each(function (i, d) {
         $(d.slots).each(function (i, da) {
-            
+
             if (da.available == true) {
                 console.log(new Date().toLocaleTimeString()+": Found a time at: "+ clinique.name);
                 //console.log(da.when);
                 console.log(d.date+' '+da.when)
                 console.log("Boka här: "+ 'https://bokning.mittvaccin.se/klinik/'+clinique.cliniqueId+'/bokning');
+                console.log("");
+		console.log("\007");
             }
         });
     });
@@ -46,7 +48,7 @@ function execute() {
 setInterval(function() {
     execute();
 
-}, 30 * 1000); // 60 * 1000 milsec
+}, 3 * 1000); // 60 * 1000 milsec
 
 //RUN first
 execute();
