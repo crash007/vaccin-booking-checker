@@ -2,6 +2,27 @@ const { JSDOM } = require( "jsdom" );
 const { window } = new JSDOM( "" );
 const $ = require( "jquery" )( window );
 
+//Parametrar för scriptet
+let cliniques = [
+    {'name': 'Nacksta', 'cliniqueId': '1291', 'appointmentType': '8853'},
+    {'name': 'Timrå', 'cliniqueId': '1311', 'appointmentType': '10620'}];
+
+//let clinique3 = {'name': 'Härnösand', 'cliniqueId': '1309', 'appointmentType': '12044'};
+//let clinique4 = {'name': 'kramfors', 'cliniqueId': '1323', 'appointmentType': '9132'};
+
+
+const daysIntervall = 30; //Dagar framåt att söka
+
+/*------------------------*/
+function toFormattedDateString(date){
+    return date.toISOString().substring(2, 10).replace(/[^0-9\.]+/g, "");
+}
+function addDays(date, days) {
+    const calculatedDate = date;
+    calculatedDate.setDate(date.getDate() + days);
+    return calculatedDate;
+}
+
 
 function parse(data,clinique) {
     $(data).each(function (i, d) {
@@ -13,33 +34,26 @@ function parse(data,clinique) {
                 console.log(d.date+' '+da.when)
                 console.log("Boka här: "+ 'https://bokning.mittvaccin.se/klinik/'+clinique.cliniqueId+'/bokning');
                 console.log("");
-		console.log("\007");
+		        console.log("\007");
             }
         });
     });
 }
 
 let baseUrl = 'https://booking-api.mittvaccin.se/clinique/'
-let clinique1 = {'name': 'Nacksta', 'cliniqueId': '1291', 'appointmentType': '8853'};
-let clinique2 = {'name': 'Timrå', 'cliniqueId': '1311', 'appointmentType': '10620'};
-let clinique3 = {'name': 'Härnösand', 'cliniqueId': '1309', 'appointmentType': '12044'};
-let clinique4 = {'name': 'kramfors', 'cliniqueId': '1323', 'appointmentType': '9132'};
 
-let cliniques = [clinique1,clinique2,clinique3,clinique4];
- var periods = ['210607-210613', '210614-210620', '210621-210627']
-//cliniques.set('Nacksta', [baseUrl+'1291/appointments/8853/slots/210607-210613','https://booking-api.mittvaccin.se/clinique/1291/appointments/8853/slots/210614-210620','https://booking-api.mittvaccin.se/clinique/1291/appointments/8853/slots/210621-210627']);
-//cliniques.set('Timra', ['https://booking-api.mittvaccin.se/clinique/1311/appointments/10620/slots/210607-210613', 'https://booking-api.mittvaccin.se/clinique/1311/appointments/10620/slots/210614-210620','https://booking-api.mittvaccin.se/clinique/1311/appointments/10620/slots/210621-210627']);
-//cliniques.set('Harnosand', ['https://booking-api.mittvaccin.se/clinique/1309/appointments/12044/slots/210607-210613', 'https://booking-api.mittvaccin.se/clinique/1309/appointments/12044/slots/210614-210620', 'https://booking-api.mittvaccin.se/clinique/1309/appointments/12044/slots/210621-210627']);
-//cliniques.set('kramfors', ['https://booking-api.mittvaccin.se/clinique/1323/appointments/9132/slots/210607-210613','https://booking-api.mittvaccin.se/clinique/1323/appointments/9132/slots/210614-210620', 'https://booking-api.mittvaccin.se/clinique/1323/appointments/9132/slots/210621-210627']);
+
+
+const dateFrom = toFormattedDateString(new Date());
+const dateTo = toFormattedDateString(addDays(new Date(), daysIntervall));
+const period = dateFrom+'-'+dateTo;
 
 function execute() {
     cliniques.forEach(function (clinique, i) {
-        periods.forEach(function (p, i) {
-            let url = baseUrl+clinique.cliniqueId+'/appointments/'+clinique.appointmentType+'/slots/'+p;
+        let url = baseUrl+clinique.cliniqueId+'/appointments/'+clinique.appointmentType+'/slots/'+period;
 
-            $.get(url, function (data, textStatus, jqXHR) {  // success callback
-                parse(data, clinique);
-            });
+        $.get(url, function (data, textStatus, jqXHR) {  // success callback
+            parse(data, clinique);
         });
     });
 
