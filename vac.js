@@ -3,15 +3,22 @@ const { window } = new JSDOM( "" );
 const $ = require( "jquery" )( window );
 
 //Parametrar för scriptet
-let cliniques = [
+const daysIntervall = 20; //Dagar framåt att söka
+const checkIntervall = 5; //3 sekunder
+const cliniques = [
     {'name': 'Nacksta', 'cliniqueId': '1291', 'appointmentType': '8853'},
-    {'name': 'Timrå', 'cliniqueId': '1311', 'appointmentType': '10620'}];
+    {'name': 'Nacksta restdos', 'cliniqueId': '1291', 'appointmentType': '17418'},
+    {'name': 'Timrå', 'cliniqueId': '1311', 'appointmentType': '10620'}
+    //{'name': 'Härnösand', 'cliniqueId': '1309', 'appointmentType': '12044'},
+    //{'name': 'kramfors', 'cliniqueId': '1323', 'appointmentType': '9132'}
+];
 
-//let clinique3 = {'name': 'Härnösand', 'cliniqueId': '1309', 'appointmentType': '12044'};
-//let clinique4 = {'name': 'kramfors', 'cliniqueId': '1323', 'appointmentType': '9132'};
 
+const dateFrom = toFormattedDateString(new Date());
+const dateTo = toFormattedDateString(addDays(new Date(), daysIntervall));
+const period = dateFrom+'-'+dateTo;
+const baseUrl = 'https://booking-api.mittvaccin.se/clinique/'
 
-const daysIntervall = 30; //Dagar framåt att söka
 
 /*------------------------*/
 function toFormattedDateString(date){
@@ -40,29 +47,19 @@ function parse(data,clinique) {
     });
 }
 
-let baseUrl = 'https://booking-api.mittvaccin.se/clinique/'
-
-
-
-const dateFrom = toFormattedDateString(new Date());
-const dateTo = toFormattedDateString(addDays(new Date(), daysIntervall));
-const period = dateFrom+'-'+dateTo;
-
 function execute() {
     cliniques.forEach(function (clinique, i) {
         let url = baseUrl+clinique.cliniqueId+'/appointments/'+clinique.appointmentType+'/slots/'+period;
-
         $.get(url, function (data, textStatus, jqXHR) {  // success callback
             parse(data, clinique);
         });
     });
-
 }
 
 setInterval(function() {
     execute();
 
-}, 3 * 1000); // 60 * 1000 milsec
+}, checkIntervall * 1000); // 60 * 1000 milsec
 
 //RUN first
 execute();
